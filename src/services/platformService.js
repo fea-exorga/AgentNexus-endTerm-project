@@ -2,6 +2,10 @@ import { clearSession, getDb, getSession, saveDb, saveSession } from './storage'
 
 const wait = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms))
 
+export function isRegistrationClosed(event) {
+  return new Date(event.registrationDeadline).getTime() < Date.now()
+}
+
 const sanitizeUser = (user) => {
   const nextUser = { ...user }
   delete nextUser.password
@@ -147,6 +151,10 @@ export async function registerForEvent(user, eventId) {
     throw new Error('This event is already full.')
   }
 
+  if (isRegistrationClosed(event)) {
+    throw new Error('Registration closed for this event.')
+  }
+
   const alreadyRegistered = user.registeredEventIds.includes(eventId)
   const nextUser = updateUser(db, user.id, (entry) => {
     if (entry.registeredEventIds.includes(eventId)) {
@@ -170,6 +178,7 @@ export async function registerForEvent(user, eventId) {
 export async function toggleJoinClub(user, clubId) {
   await wait(150)
   const db = getDb()
+  const alreadyJoined = user.joinedClubIds.includes(clubId)
   const nextUser = updateUser(db, user.id, (entry) => {
     const joined = new Set(entry.joinedClubIds)
     if (joined.has(clubId)) {
@@ -183,6 +192,15 @@ export async function toggleJoinClub(user, clubId) {
       joinedClubIds: Array.from(joined),
     }
   })
+
+  db.clubs = db.clubs.map((club) =>
+    club.id === clubId
+      ? {
+          ...club,
+          membersCount: Math.max(club.membersCount + (alreadyJoined ? -1 : 1), 0),
+        }
+      : club,
+  )
 
   saveDb(db)
   return sanitizeUser(nextUser)

@@ -60,16 +60,15 @@ function AuthPage() {
   return (
     <section className="page-shell auth-shell">
       <div className="auth-copy">
-        <span className="eyebrow">CampusConnect access</span>
-        <h1>Launch the student or organizer experience.</h1>
+        <span className="eyebrow">GoGather access</span>
+        <h1>Step into the student or organizer experience.</h1>
         <p>
           Use the demo accounts below or create a new one. This flow is persistent and ready to be swapped to
           Firebase when you add your credentials.
         </p>
-        <div className="card demo-card">
-          <h3>Demo accounts</h3>
-          <p>`student@campusconnect.dev` / `demo123`</p>
-          <p>`organizer@campusconnect.dev` / `demo123`</p>
+        <div className="card">
+          <h3>Ready to explore?</h3>
+          <p>Log in with the built-in student or organizer account, or create a fresh profile and personalize the app.</p>
         </div>
       </div>
 

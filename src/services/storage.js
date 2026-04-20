@@ -5,6 +5,23 @@ const SESSION_KEY = 'campus-connect-session'
 
 const clone = (value) => JSON.parse(JSON.stringify(value))
 
+function mergeById(current = [], incoming = []) {
+  const existingIds = new Set(current.map((item) => item.id))
+  return [...current, ...incoming.filter((item) => !existingIds.has(item.id))]
+}
+
+function migrateDb(existingDb) {
+  const nextDb = {
+    ...existingDb,
+    users: mergeById(existingDb.users, seedData.users),
+    clubs: mergeById(existingDb.clubs, seedData.clubs),
+    events: mergeById(existingDb.events, seedData.events),
+  }
+
+  localStorage.setItem(DB_KEY, JSON.stringify(nextDb))
+  return nextDb
+}
+
 function initializeDb() {
   const existing = localStorage.getItem(DB_KEY)
   if (!existing) {
@@ -12,7 +29,7 @@ function initializeDb() {
     return clone(seedData)
   }
 
-  return JSON.parse(existing)
+  return migrateDb(JSON.parse(existing))
 }
 
 export function getDb() {

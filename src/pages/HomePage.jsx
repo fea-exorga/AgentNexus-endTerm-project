@@ -16,11 +16,11 @@ function HomePage() {
     <div>
       <section className="hero-shell page-shell">
         <div>
-          <span className="eyebrow">Campus discovery for students</span>
-          <h1>Find events worth showing up for.</h1>
+          <span className="eyebrow">Student discovery, reimagined</span>
+          <h1>Find your people, your clubs, and your next campus moment.</h1>
           <p className="hero-copy">
-            CampusConnect brings student clubs, workshops, cultural programs, and career opportunities into one
-            streamlined platform for discovery and participation.
+            GoGather brings events, communities, and registrations into one bright, simple place so campus life feels
+            easier to join.
           </p>
           <div className="action-row">
             <Link className="primary-button" to="/events">
@@ -40,19 +40,10 @@ function HomePage() {
               <span>campus clubs</span>
             </div>
             <div className="stat-card">
-              <strong>{user ? 'Live dashboard' : '2 demo accounts'}</strong>
-              <span>{user ? 'personalized for you' : 'student and organizer'}</span>
+              <strong>{user ? 'Live dashboard' : 'Student + organizer'}</strong>
+              <span>{user ? 'personalized for you' : 'accounts ready to try'}</span>
             </div>
           </div>
-        </div>
-        <div className="hero-panel">
-          <h3>This project demonstrates</h3>
-          <ul className="feature-list">
-            <li>Authentication and role-based routes</li>
-            <li>Event and club discovery with filtering</li>
-            <li>Organizer CRUD workflow</li>
-            <li>Persistent user dashboards and saved data</li>
-          </ul>
         </div>
       </section>
 

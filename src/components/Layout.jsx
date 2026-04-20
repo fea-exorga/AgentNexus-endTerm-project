@@ -1,15 +1,18 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useAppData } from '../hooks/useAppData'
+import SuccessPopup from './SuccessPopup'
 
 function Layout() {
   const { user, logout } = useAuth()
+  const { successMessage, clearSuccessMessage } = useAppData()
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <NavLink to="/" className="brand-mark">
           <span className="brand-dot" />
-          CampusConnect
+          GoGather
         </NavLink>
         <nav className="main-nav">
           <NavLink to="/events">Events</NavLink>
@@ -30,7 +33,7 @@ function Layout() {
             </>
           ) : (
             <NavLink to="/auth" className="primary-button">
-              Login / Signup
+              Login / Sign up
             </NavLink>
           )}
         </div>
@@ -38,6 +41,7 @@ function Layout() {
       <main>
         <Outlet />
       </main>
+      <SuccessPopup message={successMessage} onClose={clearSuccessMessage} />
     </div>
   )
 }

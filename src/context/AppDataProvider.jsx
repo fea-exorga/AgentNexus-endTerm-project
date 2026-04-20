@@ -9,6 +9,7 @@ export function AppDataProvider({ children }) {
   const [clubs, setClubs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   const refresh = useCallback(async (currentUser = user) => {
     setLoading(true)
@@ -62,6 +63,8 @@ export function AppDataProvider({ children }) {
       clubs,
       loading,
       error,
+      successMessage,
+      clearSuccessMessage: () => setSuccessMessage(null),
       refresh,
       toggleSaveEvent: async (eventId) => {
         if (!user) {
@@ -80,6 +83,11 @@ export function AppDataProvider({ children }) {
         const nextUser = await platformService.registerForEvent(user, eventId)
         patchUser(nextUser)
         await refresh(nextUser)
+        const event = events.find((entry) => entry.id === eventId)
+        setSuccessMessage({
+          title: 'Registration confirmed',
+          body: event ? `You have successfully joined ${event.title}.` : 'Your event registration was completed successfully.',
+        })
       },
       toggleJoinClub: async (clubId) => {
         if (!user) {
@@ -89,6 +97,16 @@ export function AppDataProvider({ children }) {
         const nextUser = await platformService.toggleJoinClub(user, clubId)
         patchUser(nextUser)
         await refresh(nextUser)
+        const club = clubs.find((entry) => entry.id === clubId)
+        const joinedBefore = user.joinedClubIds?.includes(clubId)
+        setSuccessMessage({
+          title: joinedBefore ? 'Club updated' : 'Joined successfully',
+          body: club
+            ? joinedBefore
+              ? `You left ${club.name}.`
+              : `You have successfully joined ${club.name}.`
+            : 'Your club membership has been updated.',
+        })
       },
       createEvent: async (payload) => {
         await platformService.createEvent(user, payload)
@@ -103,7 +121,7 @@ export function AppDataProvider({ children }) {
         await refresh(user)
       },
     }),
-    [clubs, error, events, loading, patchUser, refresh, user],
+    [clubs, error, events, loading, patchUser, refresh, successMessage, user],
   )
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>

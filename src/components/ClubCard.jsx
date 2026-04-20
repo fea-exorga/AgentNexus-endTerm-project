@@ -18,9 +18,15 @@ function ClubCard({ club, onJoin }) {
         <Link className="ghost-button" to={`/clubs/${club.id}`}>
           View club
         </Link>
-        <button className="primary-button" onClick={() => onJoin?.(club.id)}>
-          {club.isJoined ? 'Joined' : 'Join club'}
-        </button>
+        {club.isJoined && onJoin ? (
+          <button className="primary-button" onClick={() => onJoin?.(club.id)}>
+            Joined
+          </button>
+        ) : (
+          <Link className="primary-button" to={`/clubs/${club.id}`}>
+            Join club
+          </Link>
+        )}
       </div>
     </article>
   )

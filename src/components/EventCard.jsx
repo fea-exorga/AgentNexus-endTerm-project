@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
+import { isRegistrationClosed } from '../services/platformService'
 
-function EventCard({ event, onSave, onRegister, showActions = true }) {
+function EventCard({ event, onSave, showActions = true }) {
+  const registrationClosed = isRegistrationClosed(event)
+
   return (
     <article className="card event-card">
       <div className="card-topline">
         <span className="badge">{event.category}</span>
-        <span>{new Date(event.date).toLocaleString()}</span>
+        <span>{registrationClosed ? 'Registration closed' : new Date(event.date).toLocaleString()}</span>
       </div>
       <h3>{event.title}</h3>
       <p>{event.summary}</p>
@@ -31,13 +34,17 @@ function EventCard({ event, onSave, onRegister, showActions = true }) {
             <button className="ghost-button" onClick={() => onSave?.(event.id)}>
               {event.isSaved ? 'Saved' : 'Save'}
             </button>
-            <button
-              className="primary-button"
-              onClick={() => onRegister?.(event.id)}
-              disabled={event.isRegistered}
+            <Link
+              className={registrationClosed || event.isRegistered ? 'primary-button disabled-link' : 'primary-button'}
+              onClick={(clickEvent) => {
+                if (registrationClosed || event.isRegistered) {
+                  clickEvent.preventDefault()
+                }
+              }}
+              to={`/events/${event.id}?register=1`}
             >
-              {event.isRegistered ? 'Registered' : 'Register'}
-            </button>
+              {registrationClosed ? 'Registration closed' : event.isRegistered ? 'Registered' : 'Register'}
+            </Link>
           </>
         )}
       </div>
